@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.entity.UserEntity">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="datachange_createtime" jdbcType="TIMESTAMP" property="datachangeCreatetime" />
+    <result column="datachange_updatetime" jdbcType="TIMESTAMP" property="datachangeUpdatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, user_id, password, account_name, status, datachange_createtime, datachange_updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="com.dto.UserCondition">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+      <!-- 处理用户名条件 -->
+      <if test="accountName != null and accountName != ''">
+        account_name LIKE CONCAT ('%',#{accountName},'%')
+      </if>
+      <!-- 处理状态条件 -->
+      <if test="status != null">
+        AND status = #{status}
+      </if>
+      <!-- 处理创建时间范围 -->
+      <if test="createTimeBegin != null and createTimeBegin != ''">
+        AND datachange_createtime &gt;= #{createTimeBegin}
+      </if>
+      <if test="createTimeEnd != null and createTimeEnd != ''">
+        AND datachange_createtime &lt;= #{createTimeEnd}
+      </if>
+      <!-- 处理更新时间范围 -->
+      <if test="updateTimeBegin != null and updateTimeBegin != ''">
+        AND datachange_updatetime &gt;= #{updateTimeBegin}
+      </if>
+      <if test="updateTimeEnd != null and updateTimeEnd != ''">
+        AND datachange_updatetime &lt;= #{updateTimeEnd}
+      </if>
+    </where>
+    <!-- 分页 -->
+      limit #{offset}, #{pageNo}
+  </select>
+  <select id="countByCondition" resultType="java.lang.Integer"  parameterType="com.dto.UserCondition">
+    select count(*)
+    from user
+    <where>
+      <!-- 处理用户名条件 -->
+      <if test="accountName != null and accountName != ''">
+        account_name LIKE CONCAT ('%',#{accountName},'%')
+      </if>
+      <!-- 处理状态条件 -->
+      <if test="status != null">
+        AND status = #{status}
+      </if>
+      <!-- 处理创建时间范围 -->
+      <if test="createTimeBegin != null and createTimeBegin != ''">
+        AND datachange_createtime &gt;= #{createTimeBegin}
+      </if>
+      <if test="createTimeEnd != null and createTimeEnd != ''">
+        AND datachange_createtime &lt;= #{createTimeEnd}
+      </if>
+      <!-- 处理更新时间范围 -->
+      <if test="updateTimeBegin != null and updateTimeBegin != ''">
+        AND datachange_updatetime &gt;= #{updateTimeBegin}
+      </if>
+      <if test="updateTimeEnd != null and updateTimeEnd != ''">
+        AND datachange_updatetime &lt;= #{updateTimeEnd}
+      </if>
+    </where>
+  </select>
+  <select id="selectByUserId" resultType="com.entity.UserEntity">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.entity.UserEntity">
+    insert into user (primary_id, user_id, password, 
+      account_name, status, datachange_createtime, 
+      datachange_updatetime)
+    values (#{primaryId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{accountName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{datachangeCreatetime,jdbcType=TIMESTAMP}, 
+      #{datachangeUpdatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.UserEntity">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="datachangeCreatetime != null">
+        datachange_createtime,
+      </if>
+      <if test="datachangeUpdatetime != null">
+        datachange_updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="datachangeCreatetime != null">
+        #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datachangeUpdatetime != null">
+        #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.UserEntity">
+    update user
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="datachangeCreatetime != null">
+        datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datachangeUpdatetime != null">
+        datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.UserEntity">
+    update user
+    set user_id = #{userId,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByUserIdSelective" parameterType="com.entity.UserEntity">
+    update user
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="datachangeCreatetime != null">
+        datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datachangeUpdatetime != null">
+        datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>
