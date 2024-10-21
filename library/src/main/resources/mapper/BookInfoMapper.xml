@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.BookInfoMapper">
+    <resultMap id="BaseResultMap" type="com.entity.BookInfoEntity">
+        <id column="primary_id" jdbcType="INTEGER" property="primaryId"/>
+        <result column="book_id" jdbcType="VARCHAR" property="bookId"/>
+        <result column="book_name" jdbcType="VARCHAR" property="bookName"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="datachange_createtime" jdbcType="TIMESTAMP" property="datachangeCreatetime"/>
+        <result column="datachange_updatetime" jdbcType="TIMESTAMP" property="datachangeUpdatetime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        primary_id, book_id, book_name, status, datachange_createtime, datachange_updatetime
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from book_info
+        where primary_id = #{primaryId,jdbcType=INTEGER}
+    </select>
+    <select id="countByCondition" resultType="java.lang.Integer" parameterType="com.dto.BookCondition">
+        select count(*)
+        from book_info
+        <where>
+            <!-- 处理用户名条件 -->
+            <if test="bookName != null and bookName != ''">
+                book_name LIKE CONCAT ('%',#{bookName},'%')
+            </if>
+            <!-- 处理状态条件 -->
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="selectByCondition" resultMap="BaseResultMap" parameterType="com.dto.BookCondition">
+        select
+        <include refid="Base_Column_List"/>
+        from book_info
+        <where>
+            <!-- 处理用户名条件 -->
+            <if test="bookName != null and bookName != ''">
+                book_name LIKE CONCAT ('%',#{bookName},'%')
+            </if>
+            <!-- 处理状态条件 -->
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        <!-- 分页 -->
+        limit #{offset}, #{pageNo}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from book_info
+        where primary_id = #{primaryId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.entity.BookInfoEntity">
+        insert into book_info (primary_id, book_id, book_name, status,
+                               datachange_createtime, datachange_updatetime)
+        values (#{primaryId,jdbcType=INTEGER}, #{bookId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR},
+                #{status,jdbcType=TINYINT}, #{datachangeCreatetime,jdbcType=TIMESTAMP},
+                #{datachangeUpdatetime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.entity.BookInfoEntity">
+        insert into book_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="primaryId != null">
+                primary_id,
+            </if>
+            <if test="bookId != null">
+                book_id,
+            </if>
+            <if test="bookName != null">
+                book_name,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="datachangeCreatetime != null">
+                datachange_createtime,
+            </if>
+            <if test="datachangeUpdatetime != null">
+                datachange_updatetime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="primaryId != null">
+                #{primaryId,jdbcType=INTEGER},
+            </if>
+            <if test="bookId != null">
+                #{bookId,jdbcType=VARCHAR},
+            </if>
+            <if test="bookName != null">
+                #{bookName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="datachangeCreatetime != null">
+                #{datachangeCreatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="datachangeUpdatetime != null">
+                #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByBookIdSelective" parameterType="com.entity.BookInfoEntity">
+        update book_info
+        <set>
+            <if test="bookId != null">
+                book_id = #{bookId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="datachangeCreatetime != null">
+                datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="datachangeUpdatetime != null">
+                datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where book_id = #{bookId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.entity.BookInfoEntity">
+        update book_info
+        set book_id               = #{bookId,jdbcType=VARCHAR},
+            status                = #{status,jdbcType=TINYINT},
+            book_name             = #{bookName,jdbcType=VARCHAR},
+            datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+            datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP}
+        where primary_id = #{primaryId,jdbcType=INTEGER}
+    </update>
+</mapper>

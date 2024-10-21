@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import com.service.LibraryLocalService;
-import org.springframework.web.servlet.tags.Param;
+import com.service.UserLocalService;
 
 import javax.annotation.Resource;
 
@@ -22,9 +21,9 @@ import java.util.UUID;
 import static com.enums.ErrorCode.*;
 
 @Service
-public class LibraryLocalServiceImpl implements LibraryLocalService {
+public class UserLocalServiceImpl implements UserLocalService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LibraryLocalServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserLocalServiceImpl.class);
 
     @Resource
     private UserMapper userMapper;

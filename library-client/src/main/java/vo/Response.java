@@ -1,6 +1,4 @@
-package Vo;
-
-import enums.ErrorCodes;
+package vo;
 
 import java.util.Map;
 

@@ -9,6 +9,9 @@ public enum ErrorCode {
     CREATE_USER_ERROR("100001","create user error"),
     UPDATE_USER_ERROR("100002","update user error"),
     USER_NOT_EXIST("100003","user not exist"),
+
+    CREATE_BOOK_ERROR("110001","create book error"),
+    UPDATE_BOOK_ERROR("110002","update book error"),
     UNKNOWN_ERROR("999999", "An unknown error occurred");
 
     private final String code;

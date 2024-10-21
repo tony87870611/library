@@ -1,8 +1,8 @@
 package controller;
 
-import Vo.Response;
-import Vo.CreateUserRequestVo;
-import Vo.UpdateUserRequestVo;
+import vo.Response;
+import vo.CreateUserRequestVo;
+import vo.UpdateUserRequestVo;
 import com.dto.CreateUserResponseDto;
 import com.dto.UpdateUserResponseDto;
 import org.slf4j.Logger;

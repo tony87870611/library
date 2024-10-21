@@ -3,7 +3,7 @@ package com.service.impl;
 import com.dto.QueryUserRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.service.LibraryLocalService;
+import com.service.UserLocalService;
 
 import javax.annotation.Resource;
 
@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 public class LibraryLocalServiceImplTest {
 
     @Resource
-    private LibraryLocalService service;
+    private UserLocalService service;
 
     @Test
     public void testQueryUser() {

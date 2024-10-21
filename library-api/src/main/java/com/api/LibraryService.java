@@ -12,4 +12,11 @@ public interface LibraryService {
 
     QueryUserDetailResponseDto queryUserDetail(QueryUserDetailRequestDto requestDto);
 
+    CreateBookResponseDto createBook(CreateBookRequestDto requestDto);
+
+    UpdateBookResponseDto updateBook(UpdateBookRequestDto requestDto);
+
+    QueryBookResponseDto queryBook(QueryBookRequestDto requestDto);
+
+
 }

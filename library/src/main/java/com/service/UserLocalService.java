@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
-public interface LibraryLocalService {
+public interface UserLocalService {
 
     Pair<Integer, List<UserDto>> queryUser(QueryUserRequestDto requestDto);
 

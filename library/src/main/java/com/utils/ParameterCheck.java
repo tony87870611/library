@@ -1,7 +1,9 @@
 package com.utils;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.dto.CreateBookRequestDto;
 import com.dto.CreateUserRequestDto;
+import com.dto.UpdateBookRequestDto;
 import com.dto.UpdateUserRequestDto;
 
 import static com.enums.ErrorCode.PARAMETER_ERROR;
@@ -74,6 +76,24 @@ public class ParameterCheck {
         }
         else{
             requestDto.setPassword(null);
+        }
+    }
+
+    public static void createBookCheck(CreateBookRequestDto requestDto) throws ValidationException{
+        //校驗書名
+        if(StringUtils.isEmpty(requestDto.getBookName()) ){
+            throw new ValidationException(PARAMETER_ERROR.getCode(), "book name can not be empty");
+        }
+    }
+
+    public static void updateBookCheck(UpdateBookRequestDto requestDto) throws ValidationException{
+        //較驗前端是否船bookId
+        if(StringUtils.isEmpty(requestDto.getBookId())){
+            throw new ValidationException(PARAMETER_ERROR.getCode(), "book name can not be empty");
+        }
+        //校驗書名
+        if(StringUtils.isEmpty(requestDto.getBookName()) ){
+            throw new ValidationException(PARAMETER_ERROR.getCode(), "book name can not be empty");
         }
     }
 }

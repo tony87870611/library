@@ -1,8 +1,7 @@
 package service;
 
-import Vo.CreateUserRequestVo;
-import Vo.UpdateUserRequestVo;
-import com.dto.CreateUserRequestDto;
+import vo.CreateUserRequestVo;
+import vo.UpdateUserRequestVo;
 import com.dto.CreateUserResponseDto;
 import com.dto.UpdateUserResponseDto;
 

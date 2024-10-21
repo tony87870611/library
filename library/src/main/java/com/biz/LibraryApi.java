@@ -2,12 +2,13 @@ package com.biz;
 
 import com.api.LibraryService;
 import com.dto.*;
+import com.service.BookLocalService;
 import com.utils.ParameterCheck;
 import com.utils.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.service.LibraryLocalService;
+import com.service.UserLocalService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,14 +23,17 @@ public class LibraryApi implements LibraryService {
     private static final Logger logger = LoggerFactory.getLogger(LibraryApi.class);
 
     @Resource
-    private LibraryLocalService libraryLocalService;
+    private UserLocalService userLocalService;
+
+    @Resource
+    private BookLocalService bookLocalService;
 
     @Override
     public CreateUserResponseDto createUser(CreateUserRequestDto requestDto) {
         logger.info("LibraryApi#createUser requestDto: {}", requestDto);
         try {
             ParameterCheck.createUserCheck(requestDto);
-            libraryLocalService.createUser(requestDto);
+            userLocalService.createUser(requestDto);
         } catch (ValidationException e) {
             logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
             return new CreateUserResponseDto(e.getErrorCode(), e.getErrorMessage());
@@ -42,7 +46,7 @@ public class LibraryApi implements LibraryService {
         logger.info("LibraryApi#updateUser requestDto: {}", requestDto);
         try {
             ParameterCheck.updateUserCheck(requestDto);
-            libraryLocalService.updateUser(requestDto);
+            userLocalService.updateUser(requestDto);
         } catch (ValidationException e) {
             logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
             return new UpdateUserResponseDto(e.getErrorCode(), e.getErrorMessage());
@@ -54,7 +58,7 @@ public class LibraryApi implements LibraryService {
     public QueryUserResponseDto queryUser(QueryUserRequestDto requestDto) {
         logger.info("LibraryApi#queryUser requestDto: {}", requestDto);
         QueryUserResponseDto responseDto = new QueryUserResponseDto();
-        Pair<Integer, List<UserDto>> userPair = libraryLocalService.queryUser(requestDto);
+        Pair<Integer, List<UserDto>> userPair = userLocalService.queryUser(requestDto);
         responseDto.setCount(userPair.getLeft());
         responseDto.setUserDtos(userPair.getRight());
         logger.info("LibraryApi#queryUser response: {}", responseDto);
@@ -66,12 +70,49 @@ public class LibraryApi implements LibraryService {
         logger.info("LibraryApi#queryUserDetail requestDto: {}", requestDto);
         QueryUserDetailResponseDto responseDto = new QueryUserDetailResponseDto();
         try {
-            UserDto userDto = libraryLocalService.queryUserDetail(requestDto);
+            UserDto userDto = userLocalService.queryUserDetail(requestDto);
             responseDto.setUserDto(userDto);
             return responseDto;
         } catch (ValidationException e) {
             logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
             return new QueryUserDetailResponseDto(e.getErrorCode(), e.getErrorMessage());
         }
+    }
+
+    @Override
+    public CreateBookResponseDto createBook(CreateBookRequestDto requestDto) {
+        logger.info("LibraryApi#createBook requestDto: {}", requestDto);
+        try {
+            ParameterCheck.createBookCheck(requestDto);
+            bookLocalService.createBook(requestDto);
+        } catch (ValidationException e) {
+            logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
+            return new CreateBookResponseDto(e.getErrorCode(), e.getErrorMessage());
+        }
+        return new CreateBookResponseDto(SUCCESS.getCode(), SUCCESS.getMessage());
+    }
+
+    @Override
+    public UpdateBookResponseDto updateBook(UpdateBookRequestDto requestDto) {
+        logger.info("LibraryApi#updateBook requestDto: {}", requestDto);
+        try {
+            ParameterCheck.updateBookCheck(requestDto);
+            bookLocalService.updateBook(requestDto);
+        } catch (ValidationException e) {
+            logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
+            return new UpdateBookResponseDto(e.getErrorCode(), e.getErrorMessage());
+        }
+        return new UpdateBookResponseDto(SUCCESS.getCode(), SUCCESS.getMessage());
+    }
+
+    @Override
+    public QueryBookResponseDto queryBook(QueryBookRequestDto requestDto) {
+        logger.info("LibraryApi#queryBook requestDto: {}", requestDto);
+        QueryBookResponseDto responseDto = new QueryBookResponseDto();
+        Pair<Integer, List<BookDto>> userPair = bookLocalService.queryBook(requestDto);
+        responseDto.setCount(userPair.getLeft());
+        responseDto.setBookDtos(userPair.getRight());
+        logger.info("LibraryApi#queryBook response: {}", responseDto);
+        return responseDto;
     }
 }

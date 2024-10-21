@@ -1,4 +1,4 @@
-package Vo;
+package vo;
 
 import lombok.Data;
 
