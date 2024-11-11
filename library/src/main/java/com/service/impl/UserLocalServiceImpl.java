@@ -2,6 +2,7 @@ package com.service.impl;
 
 import com.dto.*;
 import com.entity.UserEntity;
+import com.mapper.BookBorrowFlowMapper;
 import com.mapper.UserMapper;
 import com.utils.ValidationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -27,6 +28,9 @@ public class UserLocalServiceImpl implements UserLocalService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private BookBorrowFlowMapper bookBorrowFlowMapper;
 
     @Override
     public Pair<Integer, List<UserDto>> queryUser(QueryUserRequestDto requestDto) {

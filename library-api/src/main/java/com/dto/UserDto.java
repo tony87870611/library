@@ -1,6 +1,7 @@
 package com.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class UserDto {
 
@@ -20,6 +21,10 @@ public class UserDto {
      * 帳號狀態
      */
     private Integer status;
+    /**
+     * 租借的書名
+     */
+    private List<String> bookName;
     /**
      * 最後創建時間
      */
@@ -61,6 +66,14 @@ public class UserDto {
         this.status = status;
     }
 
+    public List<String> getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(List<String> bookName) {
+        this.bookName = bookName;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -84,6 +97,7 @@ public class UserDto {
                 ", accountName='" + accountName + '\'' +
                 ", password='" + password + '\'' +
                 ", status=" + status +
+                ", bookName=" + bookName +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';

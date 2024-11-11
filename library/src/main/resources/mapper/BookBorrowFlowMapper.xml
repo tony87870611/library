@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.BookBorrowFlowMapper">
+  <resultMap id="BaseResultMap" type="com.entity.BookBorrowEntity">
+    <id column="primary_id" jdbcType="INTEGER" property="primaryId" />
+    <result column="serial_no" jdbcType="VARCHAR" property="serialNo" />
+    <result column="book_id" jdbcType="VARCHAR" property="bookId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="datachange_createtime" jdbcType="TIMESTAMP" property="datachangeCreatetime" />
+    <result column="datachange_updatetime" jdbcType="TIMESTAMP" property="datachangeUpdatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, serial_no, book_id, user_id, status, datachange_createtime, datachange_updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from book_borrow_flow
+    where primary_id = #{primaryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBookNameByBookId" resultType="java.lang.String">
+    select book_name
+    from book_borrow_flow bbf
+    join book_info bi on bi.book_id = bbf.book_id
+    where bi.book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from book_borrow_flow
+    where primary_id = #{primaryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.entity.BookBorrowEntity">
+    insert into book_borrow_flow (primary_id, serial_no, book_id, 
+      user_id, status, datachange_createtime, 
+      datachange_updatetime)
+    values (#{primaryId,jdbcType=INTEGER}, #{serialNo,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{datachangeCreatetime,jdbcType=TIMESTAMP}, 
+      #{datachangeUpdatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.BookBorrowEntity">
+    insert into book_borrow_flow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="serialNo != null">
+        serial_no,
+      </if>
+      <if test="bookId != null">
+        book_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="datachangeCreatetime != null">
+        datachange_createtime,
+      </if>
+      <if test="datachangeUpdatetime != null">
+        datachange_updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=INTEGER},
+      </if>
+      <if test="serialNo != null">
+        #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null">
+        #{bookId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="datachangeCreatetime != null">
+        #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datachangeUpdatetime != null">
+        #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.BookBorrowEntity">
+    update book_borrow_flow
+    <set>
+      <if test="serialNo != null">
+        serial_no = #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null">
+        book_id = #{bookId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="datachangeCreatetime != null">
+        datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datachangeUpdatetime != null">
+        datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.BookBorrowEntity">
+    update book_borrow_flow
+    set serial_no = #{serialNo,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
+      datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP}
+    where primary_id = #{primaryId,jdbcType=INTEGER}
+  </update>
+</mapper>

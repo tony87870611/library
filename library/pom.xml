@@ -3,9 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.example</groupId>
-        <artifactId>dubbodemo</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.5</version> <!-- Spring Boot version -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>library</artifactId>
     <packaging>war</packaging>
@@ -15,39 +16,54 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>1.8</java.version> <!-- Java 8 -->
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.5.6</version>
+            <version>3.5.6</version> <!-- Compatible with Spring Boot 2.5.5 -->
         </dependency>
 
-        <!--MySql连接驱动-->
+        <!-- MySQL connection driver -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <version>8.0.33</version> <!-- Compatible with Spring Boot 2.5.5 -->
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version> <!-- 可以根据需要选择版本 -->
+            <version>3.12.0</version> <!-- Compatible version -->
         </dependency>
 
+        <!-- Spring Boot Redis starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>2.5.5</version> <!-- Spring Boot 2.5.5 compatible -->
+        </dependency>
+
+        <!-- MyBatis Spring Boot starter -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.4</version> <!-- 或者根据你使用的版本调整 -->
+            <version>2.2.0</version> <!-- Compatible with Spring Boot 2.5.5 -->
         </dependency>
 
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>library-api</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.5.5</version> <!-- 使用与 Spring Boot 主项目版本相同的版本 -->
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -59,13 +75,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.5.5</version> <!-- Ensure compatibility -->
             </plugin>
 
             <!-- Maven Surefire Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version> <!-- 升级到最新版本 -->
+                <version>3.0.0-M7</version> <!-- Latest version compatible -->
             </plugin>
         </plugins>
     </build>

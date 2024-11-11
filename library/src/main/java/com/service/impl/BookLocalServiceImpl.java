@@ -1,6 +1,7 @@
 package com.service.impl;
 
 import com.dto.*;
+import com.entity.BookBorrowEntity;
 import com.entity.BookInfoEntity;
 import com.mapper.BookInfoMapper;
 import com.service.BookLocalService;
@@ -10,12 +11,17 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.enums.ErrorCode.CREATE_BOOK_ERROR;
@@ -30,6 +36,11 @@ public class BookLocalServiceImpl implements BookLocalService {
 
     @Resource
     private BookInfoMapper bookInfoMapper;
+
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
 
     @Override
     public void createBook(CreateBookRequestDto requestDto) throws ValidationException {
@@ -58,13 +69,29 @@ public class BookLocalServiceImpl implements BookLocalService {
     @Override
     public Pair<Integer, List<BookDto>> queryBook(QueryBookRequestDto requestDto) {
         logger.info("BookLocalServiceImpl#queryBook requestDto: {}", requestDto);
+
+        //根據請求Dto創建Redis鍵
+        String redisKey = "book_query:" + requestDto.hashCode();
+        ValueOperations<String, Object> opsForValue = redisTemplate.opsForValue();
+
+        //查詢快取
+        Pair<Integer, List<BookDto>> cachedResult = (Pair<Integer, List<BookDto>>) opsForValue.get(redisKey);
+        if (cachedResult != null) {
+            return cachedResult;
+        }
+
         BookCondition condition = transfer2BookCondition(requestDto);
         int count = bookInfoMapper.countByCondition(condition);
         if (count == 0) {
             return ImmutablePair.of(0, null);
         }
         List<BookInfoEntity> bookInfoEntities = bookInfoMapper.selectByCondition(condition);
-        return ImmutablePair.of(count,transfer2BookDtoList(bookInfoEntities));
+        Pair<Integer, List<BookDto>> result = ImmutablePair.of(count, transfer2BookDtoList(bookInfoEntities));
+
+        //將查詢結果存入Redis並設置過期時間
+        opsForValue.set(redisKey, result, 10, TimeUnit.MINUTES);
+
+        return result;
     }
 
     private List<BookDto> transfer2BookDtoList(List<BookInfoEntity> sourceList) {

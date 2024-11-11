@@ -21,4 +21,8 @@ public interface BookInfoMapper {
     int countByCondition(BookCondition condition);
 
     List<BookInfoEntity> selectByCondition(BookCondition condition);
+
+    BookInfoEntity selectByBookId(String bookId);
+
+    int updateByStatusAndBookId(String bookId, Integer originStatus, Integer targetStatus);
 }

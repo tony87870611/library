@@ -49,6 +49,12 @@
         <!-- 分页 -->
         limit #{offset}, #{pageNo}
     </select>
+    <select id="selectByBookId" resultType="com.entity.BookInfoEntity" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from book_info
+        where book_id=#{bookId}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from book_info
@@ -130,5 +136,10 @@
             datachange_createtime = #{datachangeCreatetime,jdbcType=TIMESTAMP},
             datachange_updatetime = #{datachangeUpdatetime,jdbcType=TIMESTAMP}
         where primary_id = #{primaryId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByStatusAndBookId">
+        update book_info
+        set status = #{targetStatus}
+        where status = #{originStatus}
     </update>
 </mapper>
