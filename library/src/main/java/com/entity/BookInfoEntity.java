@@ -62,4 +62,16 @@ public class BookInfoEntity {
     public void setDatachangeUpdatetime(Date datachangeUpdatetime) {
         this.datachangeUpdatetime = datachangeUpdatetime;
     }
+
+    @Override
+    public String toString() {
+        return "BookInfoEntity{" +
+                "primaryId=" + primaryId +
+                ", bookId='" + bookId + '\'' +
+                ", bookName='" + bookName + '\'' +
+                ", status=" + status +
+                ", datachangeCreatetime=" + datachangeCreatetime +
+                ", datachangeUpdatetime=" + datachangeUpdatetime +
+                '}';
+    }
 }

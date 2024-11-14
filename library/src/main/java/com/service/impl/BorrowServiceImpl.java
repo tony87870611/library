@@ -4,7 +4,7 @@ import com.entity.BookBorrowEntity;
 import com.entity.BookInfoEntity;
 import com.mapper.BookBorrowFlowMapper;
 import com.mapper.BookInfoMapper;
-import com.service.RentalService;
+import com.service.BorrowService;
 import com.utils.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,12 +17,14 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static com.enums.BookStatus.AVAILABLE;
+import static com.enums.BookStatus.RENTAL;
+import static com.enums.BorrowFlowStatus.BORROW;
 import static com.enums.ErrorCode.*;
-import static com.enums.RentalStatus.AVAILABLE;
-import static com.enums.RentalStatus.RENTAL;
+
 
 @Service
-public class RentalServiceImpl implements RentalService {
+public class BorrowServiceImpl implements BorrowService {
 
     private static final String BOOK_LOCK_KEY_PREFIX = "BOOK_LOCK_";
 
@@ -34,7 +36,6 @@ public class RentalServiceImpl implements RentalService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
-
 
     @Transactional
     public void borrowBook(String bookId) throws ValidationException {
@@ -61,16 +62,18 @@ public class RentalServiceImpl implements RentalService {
             throw new ValidationException(BOOK_NOT_FOUND.getCode(), BOOK_NOT_FOUND.getMessage());
         }
 
-        //檢查書籍是否可還
+        //檢查書籍是否可借
         if (!isBookAvailable(bookInfoEntity)) {
             throw new ValidationException(BOOK_NOT_AVAILABLE.getCode(), BOOK_NOT_AVAILABLE.getMessage());
         }
-        BookBorrowEntity bookBorrowEntity = buildBookBorrowEntity(bookId, bookInfoEntity.getStatus());
+        //插入一筆借書流水
+        BookBorrowEntity bookBorrowEntity = buildBookBorrowEntity(bookId, BORROW.getCode());
         int count1 = bookBorrowFlowMapper.insertSelective(bookBorrowEntity);
         if (count1 != 1) {
             throw new ValidationException(CREATE_BOOK_FLOW_ERROR.getCode(), CREATE_BOOK_FLOW_ERROR.getMessage());
         }
-        int count2 = bookInfoMapper.updateByStatusAndBookId(bookId, bookInfoEntity.getStatus(), RENTAL.getCode());
+        //更新書籍狀態從可借書到租借中
+        int count2 = bookInfoMapper.updateByStatusAndBookId(bookId, AVAILABLE.getCode(), RENTAL.getCode());
         if (count2 != 1) {
             throw new ValidationException(UPDATE_BOOK_ERROR.getCode(), UPDATE_BOOK_ERROR.getMessage());
         }
@@ -109,7 +112,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     /**
-     * 創建借數流水實體
+     * 創建借書流水實體
      * @param bookId
      * @param currentStatus
      * @return

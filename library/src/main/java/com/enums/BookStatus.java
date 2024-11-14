@@ -1,14 +1,13 @@
 package com.enums;
 
-public enum RentalStatus {
-
+public enum BookStatus {
     AVAILABLE(0),
     RENTAL(1);
 
     private Integer code;
 
     // 构造函数
-    RentalStatus(Integer code) {
+    BookStatus(Integer code) {
         this.code = code;
     }
 
@@ -18,13 +17,12 @@ public enum RentalStatus {
     }
 
     // 根据整数值获取对应的枚举
-    public static RentalStatus fromCode(int code) {
-        for (RentalStatus status : RentalStatus.values()) {
+    public static BookStatus fromCode(int code) {
+        for (BookStatus status : BookStatus.values()) {
             if (status.code == code) {
                 return status;
             }
         }
         throw new IllegalArgumentException("Invalid code: " + code);
     }
-
 }
