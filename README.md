@@ -3,7 +3,8 @@
 希望能讓您更理解我的寫程式思路或架構
 全專案採用SpringMVC+MyBatis的SpringBoot專案
 其中有使用事務樂觀索及分布式鎖
-在Docker上部屬Redis在本地的Port:6379
+必須在Docker上部屬Redis在本地的Port:6379
+目前Dubbo調用還沒註冊到zookeeper中 支持本地調用
 
 dubbodemo專案下
 library-client為客戶端
