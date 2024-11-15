@@ -5,6 +5,7 @@
 其中有使用事務樂觀索及分布式鎖
 必須在Docker上部屬Redis在本地的Port:6379
 目前Dubbo調用還沒註冊到zookeeper中 支持本地調用
+後端服務大致完成 客戶端還未完成
 
 dubbodemo專案下
 library-client為客戶端
