@@ -1,5 +1,6 @@
 package com.service.impl;
 
+import com.dto.BorrowBookRequestDto;
 import com.entity.BookBorrowEntity;
 import com.entity.BookInfoEntity;
 import com.mapper.BookBorrowFlowMapper;
@@ -38,9 +39,9 @@ public class BorrowServiceImpl implements BorrowService {
     private StringRedisTemplate redisTemplate;
 
     @Transactional
-    public void borrowBook(String bookId) throws ValidationException {
+    public void borrowBook(BorrowBookRequestDto requestDto) throws ValidationException {
 
-        String lockKey = BOOK_LOCK_KEY_PREFIX + bookId;
+        String lockKey = BOOK_LOCK_KEY_PREFIX + requestDto.getBookId();
         String lockValue = UUID.randomUUID().toString();
 
         try {
@@ -48,16 +49,16 @@ public class BorrowServiceImpl implements BorrowService {
             if (!acquireLock(lockKey, lockValue)) {
                 throw new ValidationException(BOOK_LOCK_ERROR.getCode(), BOOK_LOCK_ERROR.getMessage());
             }
-            performBorrowing(bookId);
+            performBorrowing(requestDto);
         } finally {
             //釋放鎖
             releaseLock(lockKey, lockValue);
         }
     }
 
-    private void performBorrowing(String bookId) throws ValidationException {
+    private void performBorrowing(BorrowBookRequestDto requestDto) throws ValidationException {
         //查詢書籍訊息
-        BookInfoEntity bookInfoEntity = bookInfoMapper.selectByBookId(bookId);
+        BookInfoEntity bookInfoEntity = bookInfoMapper.selectByBookId(requestDto.getBookId());
         if (bookInfoEntity == null) {
             throw new ValidationException(BOOK_NOT_FOUND.getCode(), BOOK_NOT_FOUND.getMessage());
         }
@@ -67,15 +68,15 @@ public class BorrowServiceImpl implements BorrowService {
             throw new ValidationException(BOOK_NOT_AVAILABLE.getCode(), BOOK_NOT_AVAILABLE.getMessage());
         }
         //插入一筆借書流水
-        BookBorrowEntity bookBorrowEntity = buildBookBorrowEntity(bookId, BORROW.getCode());
+        BookBorrowEntity bookBorrowEntity = buildBookBorrowEntity(requestDto.getBookId(), requestDto.getUserId(), BORROW.getCode());
         int count1 = bookBorrowFlowMapper.insertSelective(bookBorrowEntity);
         if (count1 != 1) {
             throw new ValidationException(CREATE_BOOK_FLOW_ERROR.getCode(), CREATE_BOOK_FLOW_ERROR.getMessage());
         }
         //更新書籍狀態從可借書到租借中
-        int count2 = bookInfoMapper.updateByStatusAndBookId(bookId, AVAILABLE.getCode(), RENTAL.getCode());
+        int count2 = bookInfoMapper.updateByStatusAndBookId(requestDto.getBookId(), AVAILABLE.getCode(), RENTAL.getCode());
         if (count2 != 1) {
-            throw new ValidationException(UPDATE_BOOK_ERROR.getCode(), UPDATE_BOOK_ERROR.getMessage());
+            throw new ValidationException(UPDATE_BOOK_STATUS_ERROR.getCode(), UPDATE_BOOK_STATUS_ERROR.getMessage());
         }
     }
 
@@ -104,6 +105,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     /**
      * 檢查書籍是否可借
+     *
      * @param bookInfoEntity
      * @return
      */
@@ -113,15 +115,17 @@ public class BorrowServiceImpl implements BorrowService {
 
     /**
      * 創建借書流水實體
+     *
      * @param bookId
      * @param currentStatus
      * @return
      */
-    private BookBorrowEntity buildBookBorrowEntity(String bookId, Integer currentStatus) {
+    private BookBorrowEntity buildBookBorrowEntity(String bookId, String userId, Integer currentStatus) {
         BookBorrowEntity bookBorrowEntity = new BookBorrowEntity();
         bookBorrowEntity.setBookId(bookId);
         bookBorrowEntity.setSerialNo(UUID.randomUUID().toString().substring(0, 16));
         bookBorrowEntity.setStatus(currentStatus);
+        bookBorrowEntity.setUserId(userId);
         return bookBorrowEntity;
     }
 }

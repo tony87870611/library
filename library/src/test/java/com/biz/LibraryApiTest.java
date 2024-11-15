@@ -34,8 +34,6 @@ public class LibraryApiTest {
     @Test
     public void testQueryUser() {
         QueryUserRequestDto requestDto = new QueryUserRequestDto();
-        requestDto.setAccountName("Tony");
-        requestDto.setStatus(1);
         requestDto.setPageNo(1);
         requestDto.setPageSize(10);
         QueryUserResponseDto responseDto = libraryApi.queryUser(requestDto);
@@ -53,7 +51,7 @@ public class LibraryApiTest {
     @Test
     public void testCreateBook(){
         CreateBookRequestDto requestDto = new CreateBookRequestDto();
-        requestDto.setBookName("Taiwan History");
+        requestDto.setBookName("Math");
         CreateBookResponseDto responseDto = libraryApi.createBook(requestDto);
         System.out.println("CreateBookResponseDto : " + responseDto);
     }
@@ -69,4 +67,20 @@ public class LibraryApiTest {
         System.out.println("QueryBookResponse : " + responseDto);
     }
 
+    @Test
+    public void testUpdateBook(){
+        UpdateBookRequestDto requestDto = new UpdateBookRequestDto();
+        requestDto.setBookName("Taiwan History");
+        UpdateBookResponseDto responseDto = libraryApi.updateBook(requestDto);
+        System.out.println("UpdateBookResponseDto : " + responseDto);
+    }
+
+    @Test
+    public void testBorrowBook(){
+        BorrowBookRequestDto requestDto = new BorrowBookRequestDto();
+        requestDto.setBookId("dd88f595-9eea-4c");
+        requestDto.setUserId("Tony Test1");
+        BorrowBookResponseDto responseDto = libraryApi.borrowBook(requestDto);
+        System.out.println("BorrowBookResponseDto : " + responseDto);
+    }
 }

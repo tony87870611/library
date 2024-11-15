@@ -12,8 +12,9 @@ public enum ErrorCode {
 
     CREATE_BOOK_ERROR("110001","create book error"),
     UPDATE_BOOK_ERROR("110002","update book error"),
-    BOOK_NOT_FOUND("110003","book not found"),
-    BOOK_NOT_AVAILABLE("110004","book not available"),
+    UPDATE_BOOK_STATUS_ERROR("110003","update book status error"),
+    BOOK_NOT_FOUND("110004","book not found"),
+    BOOK_NOT_AVAILABLE("110005","book not available"),
 
     CREATE_BOOK_FLOW_ERROR("120001","create book flow error"),
     BOOK_LOCK_ERROR("120002","book lock error"),

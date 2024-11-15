@@ -3,6 +3,8 @@ package com.biz;
 import com.api.LibraryService;
 import com.dto.*;
 import com.service.BookLocalService;
+import com.service.BorrowService;
+import com.service.ReturnService;
 import com.utils.ParameterCheck;
 import com.utils.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,6 +29,12 @@ public class LibraryApi implements LibraryService {
 
     @Resource
     private BookLocalService bookLocalService;
+
+    @Resource
+    private ReturnService returnService;
+
+    @Resource
+    private BorrowService borrowService;
 
     @Override
     public CreateUserResponseDto createUser(CreateUserRequestDto requestDto) {
@@ -115,4 +123,29 @@ public class LibraryApi implements LibraryService {
         logger.info("LibraryApi#queryBook response: {}", responseDto);
         return responseDto;
     }
+
+    @Override
+    public BorrowBookResponseDto borrowBook(BorrowBookRequestDto requestDto) {
+        logger.info("LibraryApi#borrowBook requestDto: {}", requestDto);
+        try{
+            borrowService.borrowBook(requestDto);
+        }catch (ValidationException e){
+            logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
+            return new BorrowBookResponseDto(e.getErrorCode(), e.getErrorMessage());
+        }
+        return new BorrowBookResponseDto(SUCCESS.getCode(), SUCCESS.getMessage());
+    }
+
+    @Override
+    public ReturnBookResponseDto returnBook(String bookId) {
+        logger.info("LibraryApi#returnBook requestDto: {}", bookId);
+        try{
+            returnService.returnBook(bookId);
+        }catch (ValidationException e){
+            logger.error("Error occurred with code: {}, message: {}", e.getErrorCode(), e.getErrorMessage());
+            return new ReturnBookResponseDto(e.getErrorCode(), e.getErrorMessage());
+        }
+        return new ReturnBookResponseDto(SUCCESS.getCode(), SUCCESS.getMessage());
+    }
+
 }

@@ -18,5 +18,7 @@ public interface LibraryService {
 
     QueryBookResponseDto queryBook(QueryBookRequestDto requestDto);
 
+    BorrowBookResponseDto borrowBook(BorrowBookRequestDto requestDto);
 
+    ReturnBookResponseDto returnBook(String BookId);
 }
