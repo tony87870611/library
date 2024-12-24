@@ -11,6 +11,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.service.UserLocalService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +25,9 @@ import static com.enums.ErrorCode.SUCCESS;
 public class LibraryApi implements LibraryService {
 
     private static final Logger logger = LoggerFactory.getLogger(LibraryApi.class);
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
     private UserLocalService userLocalService;

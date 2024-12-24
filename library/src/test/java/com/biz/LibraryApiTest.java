@@ -83,4 +83,11 @@ public class LibraryApiTest {
         BorrowBookResponseDto responseDto = libraryApi.borrowBook(requestDto);
         System.out.println("BorrowBookResponseDto : " + responseDto);
     }
+
+    @Test
+    public void testReturnBook(){
+        String bookId = "dd88f595-9eea-4c";
+        ReturnBookResponseDto responseDto = libraryApi.returnBook(bookId);
+        System.out.println("BorrowBookResponseDto : " + responseDto);
+    }
 }

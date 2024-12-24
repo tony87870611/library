@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class Response {
 
-    private Map<String,Object> result;
+    private Map<String, Object> result;
 
     private String returnCode;
 
@@ -15,6 +15,12 @@ public class Response {
     }
 
     public Response(String returnCode, String returnMsg) {
+        this.returnCode = returnCode;
+        this.returnMsg = returnMsg;
+    }
+
+    public Response(Map<String, Object> result, String returnCode, String returnMsg) {
+        this.result = result;
         this.returnCode = returnCode;
         this.returnMsg = returnMsg;
     }

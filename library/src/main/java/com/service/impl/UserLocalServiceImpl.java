@@ -2,6 +2,7 @@ package com.service.impl;
 
 import com.dto.*;
 import com.entity.UserEntity;
+import com.google.gson.Gson;
 import com.mapper.BookBorrowFlowMapper;
 import com.mapper.UserMapper;
 import com.utils.ValidationException;
@@ -10,6 +11,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.service.UserLocalService;
 
@@ -18,6 +21,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.enums.ErrorCode.*;
 
@@ -26,11 +30,17 @@ public class UserLocalServiceImpl implements UserLocalService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserLocalServiceImpl.class);
 
+    private static final String USER_CACHE_PREFIX = "user:detail:";
+
     @Resource
     private UserMapper userMapper;
 
     @Resource
     private BookBorrowFlowMapper bookBorrowFlowMapper;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
 
     @Override
     public Pair<Integer, List<UserDto>> queryUser(QueryUserRequestDto requestDto) {
@@ -48,11 +58,27 @@ public class UserLocalServiceImpl implements UserLocalService {
     @Override
     public UserDto queryUserDetail(QueryUserDetailRequestDto requestDto) throws ValidationException {
         logger.info("LibraryLocalServiceImpl#queryUserDetail requestDto: {}", requestDto);
+        String cacheKey = USER_CACHE_PREFIX + requestDto.getUserId();
+
+        //從緩存中查詢用戶信息
+        UserDto cachedUserDto = (UserDto) redisTemplate.opsForValue().get(cacheKey);
+        if (cachedUserDto != null) {
+            logger.info("Cache hit");
+            return cachedUserDto;
+        }
+
+        //緩存未命中,查詢數據庫
         UserEntity userEntity = userMapper.selectByUserId(requestDto.getUserId());
         if (userEntity == null) {
             throw new ValidationException(USER_NOT_EXIST.getCode(), USER_NOT_EXIST.getMessage());
         }
-        return transfer2UserDto(userEntity);
+        UserDto userDto = transfer2UserDto(userEntity);
+
+        //將查詢結果寫入緩存中
+        redisTemplate.opsForValue().set(cacheKey, userDto, 10, TimeUnit.MINUTES);
+        logger.info("Cached set for key: {}", cacheKey);
+
+        return userDto;
     }
 
     private UserDto transfer2UserDto(UserEntity source) {
